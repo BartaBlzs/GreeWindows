@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="GreeAC.Library/GreeAC.Library.csproj" />
+  <Project Path="GreeWindows/GreeWindows.csproj" />
+</Solution>

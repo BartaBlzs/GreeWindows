@@ -6,7 +6,7 @@ An application which enables the user to connect and control GREE air conditione
 
 This project is heavily based on the excellent work of [tomikaa87/gree-remote](https://github.com/tomikaa87/gree-remote). 
 
-**⚠️ Work in Progress**: This application is far from complete and is actively being developed.
+**⚠️ Work in Progress**: This application is far from complete, some services might not work.
 
 ## Download
 

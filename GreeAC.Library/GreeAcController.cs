@@ -377,6 +377,8 @@ namespace GreeAC.Library
                         case "Health": status.Health = dat[i] == 1; break;
                         case "SwUpDn": status.SwingVertical = dat[i]; break;
                         case "SwingLfRig": status.SwingHorizontal = dat[i]; break;
+                        case "SwhSlp": status.Sleep = dat[i] == 1; break;
+                        case "Blo": status.XFan = dat[i] == 1; break;
                     }
                 }
 

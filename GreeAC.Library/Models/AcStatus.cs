@@ -15,6 +15,20 @@ namespace GreeAC.Library.Models
         private bool _health;
         private int _swingVertical;
         private int _swingHorizontal;
+        private bool _sleep;
+        private bool _xFan;
+
+        public bool Sleep
+        {
+            get => _sleep;
+            set { _sleep = value; OnPropertyChanged(); }
+        }
+
+        public bool XFan
+        {
+            get => _xFan;
+            set { _xFan = value; OnPropertyChanged(); }
+        }
 
         public bool Power
         {
@@ -54,8 +68,10 @@ namespace GreeAC.Library.Models
         {
             0 => "Auto",
             1 => "Low",
-            2 => "Medium",
-            3 => "High",
+            2 => "Med-Low",
+            3 => "Medium",
+            4 => "Med-High",
+            5 => "High",
             _ => "Unknown"
         };
 

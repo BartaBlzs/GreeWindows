@@ -24,6 +24,7 @@ public partial class PopupWindow : Window
 
         // Close when clicking outside (losing focus)
         Deactivated += (s, e) => Hide();
+        Activated += async (s, e) => await RefreshStatusAsync();
 
         _controller = new GreeAcController();
         _controller.LogMessage += OnLogMessage;
@@ -178,14 +179,42 @@ public partial class PopupWindow : Window
             {
                 case 0: FanAuto.IsChecked = true; break;
                 case 1: FanLow.IsChecked = true; break;
-                case 2: FanMedium.IsChecked = true; break;
-                case 3: FanHigh.IsChecked = true; break;
+                case 2: FanMedLow.IsChecked = true; break;
+                case 3: FanMedium.IsChecked = true; break;
+                case 4: FanMedHigh.IsChecked = true; break;
+                case 5: FanHigh.IsChecked = true; break;
             }
 
             TurboCheckBox.IsChecked = status.Turbo;
             QuietCheckBox.IsChecked = status.Quiet;
             LightCheckBox.IsChecked = status.Light;
             HealthCheckBox.IsChecked = status.Health;
+            SleepCheckBox.IsChecked = status.Sleep;
+            XFanCheckBox.IsChecked = status.XFan;
+
+            // Update Vertical Swing UI
+            switch (status.SwingVertical)
+            {
+                case 1: UdAuto.IsChecked = true; break;
+                case 2: UdPos1.IsChecked = true; break;
+                case 3: UdPos2.IsChecked = true; break;
+                case 4: UdPos3.IsChecked = true; break;
+                case 5: UdPos4.IsChecked = true; break;
+                case 6: UdPos5.IsChecked = true; break;
+                default: UdOff.IsChecked = true; break;
+            }
+
+            // Update Horizontal Swing UI
+            switch (status.SwingHorizontal)
+            {
+                case 1: LrAuto.IsChecked = true; break;
+                case 2: LrPos1.IsChecked = true; break;
+                case 3: LrPos2.IsChecked = true; break;
+                case 4: LrPos3.IsChecked = true; break;
+                case 5: LrPos4.IsChecked = true; break;
+                case 6: LrPos5.IsChecked = true; break;
+                default: LrOff.IsChecked = true; break;
+            }
         }
         finally
         {
@@ -207,6 +236,48 @@ public partial class PopupWindow : Window
         {
             System.Windows.MessageBox.Show($"Failed to set power: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private async void UdSwing_Checked(object sender, RoutedEventArgs e)
+    {
+        if (_isUpdatingUI || !_isInitialized || _controller == null) return;
+
+        if (sender is System.Windows.Controls.RadioButton rb && rb.Tag != null)
+        {
+            if (int.TryParse(rb.Tag.ToString(), out int val))
+            {
+                try
+                {
+                    await _controller.SetParametersAsync(new Dictionary<string, int> { ["SwUpDn"] = val });
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Failed to set Up-Down swing: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+    }
+
+    private async void LrSwing_Checked(object sender, RoutedEventArgs e)
+    {
+        if (_isUpdatingUI || !_isInitialized || _controller == null) return;
+
+        if (sender is System.Windows.Controls.RadioButton rb && rb.Tag != null)
+        {
+            if (int.TryParse(rb.Tag.ToString(), out int val))
+            {
+                try
+                {
+                    await _controller.SetParametersAsync(new Dictionary<string, int> { ["SwingLfRig"] = val });
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Failed to set Left-Right swing: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 
@@ -321,6 +392,10 @@ public partial class PopupWindow : Window
                 parameters["Lig"] = checkBox.IsChecked == true ? 1 : 0;
             else if (checkBox == HealthCheckBox)
                 parameters["Health"] = checkBox.IsChecked == true ? 1 : 0;
+            else if (checkBox == SleepCheckBox)
+                parameters["SwhSlp"] = checkBox.IsChecked == true ? 1 : 0;
+            else if (checkBox == XFanCheckBox)
+                parameters["Blo"] = checkBox.IsChecked == true ? 1 : 0;
 
             await _controller.SetParametersAsync(parameters);
         }
